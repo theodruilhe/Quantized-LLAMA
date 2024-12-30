@@ -1,0 +1,11 @@
+transformers==4.47.1
+accelerate==0.31.0
+bitsandbytes==0.42.0
+joblib==1.4.2
+jmespath==1.0.1
+protobuf==5.28.2
+onnxruntime-silicon==1.16.3
+onnx==1.17.0
+optimum==1.23.3
+numpy==1.26.4
+matplotlib==3.10.0 
