@@ -78,7 +78,9 @@ The diagram below provides a detailed visualization of the Transformer architect
 -   The self-attention mechanism is the core of the transformer architecture. It allows the model to dynamically focus on relevant parts of the input sequence when generating predictions.
 -   For each token in the input, the self-attention mechanism calculates a weighted sum of all other tokens in the sequence, determining their importance for the current token.
 
-**Mathematical Formulation:** For a given input sequence, the self-attention mechanism computes the output as: $$ \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V $$
+**Mathematical Formulation:** For a given input sequence, the self-attention mechanism computes the output as: 
+
+$$ \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V $$
 
 Where
 
@@ -98,11 +100,13 @@ This mechanism allows the model to assign attention weights dynamically, learnin
 -   Instead of performing a single self-attention calculation, the transformer uses **multi-head attention**, where attention is computed in parallel across multiple "heads."
 -   Each head learns to focus on different parts of the input sequence, capturing diverse relationships and dependencies.
 
-**Formula for Multi-Head Attention:** $$
-\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h)W^O
-$$ Where each attention head is computed as: $$
-\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
-$$
+**Formula for Multi-Head Attention:**
+
+$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h)W^O$$ 
+
+Where each attention head is computed as: 
+
+$$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
 
 -   $W_i^Q, W_i^K, W_i^V$: Learnable projection matrices for the $i$-th head.
 
@@ -118,6 +122,7 @@ By concatenating and projecting the results, the model integrates diverse attent
 -   These encodings are designed to help the model distinguish the position of each token in the sequence.
 
 **Formula for Positional Encoding:** 
+
 $$\text{PE}_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d}}\right), \quad \text{PE}_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d}}\right)$$ 
 
 Where:
@@ -133,6 +138,7 @@ The use of sin and cos functions at different frequencies ensures unique encodin
 
 -   After the self-attention mechanism, the transformer applies a position-wise feedforward network (FFN) to add non-linearity and model complex patterns.
 -   Each FFN consists of two linear transformations with a ReLU activation: 
+
     $$\text{FFN}(x) = \text{max}(0, xW_1 + b_1)W_2 + b_2$$ 
 
 Where:
@@ -145,9 +151,10 @@ This FFN is applied independently to each position in the sequence.
 
 #### **5. Layer Normalization and Residual Connections**
 
--   **Residual Connections:** Add the input of a layer directly to its output to improve gradient flow: $$
-    \text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))
-    $$
+-   **Residual Connections:** Add the input of a layer directly to its output to improve gradient flow:
+
+$$\text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))$$
+
 -   **Layer Normalization:** Stabilizes training by normalizing the outputs of each sublayer (e.g., attention, FFN) across the feature dimension.
 
 These components help mitigate the issues of vanishing/exploding gradients and improve convergence.
