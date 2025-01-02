@@ -1,6 +1,5 @@
 transformers==4.47.1
 accelerate==0.31.0
-bitsandbytes==0.42.0
 joblib==1.4.2
 jmespath==1.0.1
 protobuf==5.28.2
@@ -9,5 +8,9 @@ onnx==1.17.0
 optimum==1.23.3
 numpy==1.26.4
 matplotlib==3.10.0 
-bitsandbytes==0.45.0
-accelerate==1.2.1
+bitsandbytes==0.42.0
+wrapt==1.17.0
+rich==13.9.4
+tensorflow==2.18.0
+tf_keras==2.18.0
+tabular==0.9.0
