@@ -27,7 +27,7 @@ def get_memory_usage():
 
 # Function to measure inference time
 def measure_inference_time(model, tokenizer, prompt, num_tokens=50):
-    inputs = tokenizer(prompt, return_tensors="pt").to("cpu")
+    inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
     start_time = time.time()
     outputs = model.generate(**inputs, max_new_tokens=num_tokens)
     end_time = time.time()
@@ -45,7 +45,7 @@ def evaluate_model(model, tokenizer, prompt, model_type):
 
 if __name__ == "__main__":
     # Set paths and configurations
-    quantized_model_path = "./quantized_model"
+    quantized_model_path = "./quantized_model/"
     model_name = "meta-llama/Llama-3.2-1B"
     HF_TOKEN = load_token()
     prompt = "Once upon a time"
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     # Load and evaluate the full-precision model
     print("\nLoading full-precision model...")
-    full_precision_model = AutoModelForCausalLM.from_pretrained(model_name, token=HF_TOKEN).to("cpu")
+    full_precision_model = AutoModelForCausalLM.from_pretrained(model_name, token=HF_TOKEN).to("cuda")
     full_memory, full_time, full_text = evaluate_model(full_precision_model, tokenizer, prompt, "Full-Precision")
 
     # Load and evaluate the quantized ONNX model
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     quantized_model = ORTModelForCausalLM.from_pretrained(
         quantized_model_path,
         quantization_config=AutoQuantizationConfig.arm64(is_static=False),
-        provider="CPUExecutionProvider",
+        provider="CUDAExecutionProvider",
         use_cache=False,
         use_io_binding=False
     )
@@ -83,8 +83,8 @@ if __name__ == "__main__":
     print(df)
 
     # Save results to a markdown file
-    df.to_markdown("REPORT.md", index=False)
-    print("\nResults saved to REPORT.md")
+    # df.to_markdown("REPORT.md", index=False)
+    # print("\nResults saved to REPORT.md")
 
     # Plotting the results
     plt.figure(figsize=(10, 5))
