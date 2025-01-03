@@ -93,7 +93,7 @@ $$
 Where
 
 -   $Q$(Query), $K$(Key), and $V$(Value) are matrices derived from the input embeddings: 
-    $$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$
+$$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$
 
     Here, $W^Q$, $W^K$, $W^V$ are learnable weight matrices.
 
@@ -113,7 +113,7 @@ Instead of performing a single self-attention calculation, the transformer uses 
 
 $$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h)W^O$$
 
-Where each attention head is computed as: $$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
+Where each attention head is computed as:$$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
 
 -   $W_i^$, $W_i^K$, $W_i^V$: Learnable projection matrices for the $i$-th head.
 
@@ -144,7 +144,7 @@ The use of sin and cos functions at different frequencies ensures unique encodin
 
 #### **4. Feedforward Layers**
 
-After the self-attention mechanism, the transformer applies a position-wise feedforward network (FFN) to add non-linearity and model complex patterns.Each FFN consists of two linear transformations with a ReLU activation: $$\text{FFN}(x) = \text{max}(0, xW_1 + b_1)W_2 + b_2$$
+After the self-attention mechanism, the transformer applies a position-wise feedforward network (FFN) to add non-linearity and model complex patterns.Each FFN consists of two linear transformations with a ReLU activation:$$\text{FFN}(x) = \text{max}(0, xW_1 + b_1)W_2 + b_2$$
 
 Where:
 
@@ -199,7 +199,7 @@ In causal transformers, the self-attention mechanism is modified to enforce a st
 
 **Autoregressive models** generate text sequentially, one token at a time. The model predicts the next token $x_t$based on all previously generated tokens $x_1$ , $x_2$ , $\dots$ , $x_{t-1}$ . This process is fundamental for tasks like text generation, where output coherence depends on maintaining sequential dependencies.
 
-The conditional probability of generating a sequence $$x = [x_1, x_2, \dots, x_T]$$ is factorized as:
+The conditional probability of generating a sequence$$x = [x_1, x_2, \dots, x_T]$$is factorized as:
 
 $$
 P(x_1, x_2, \dots, x_T) = \prod_{t=1}^{T} P(x_t | x_1, x_2, \dots, x_{t-1})
@@ -242,7 +242,7 @@ The causal attention mask is applied directly to the scaled dot-product attentio
 
 1.  **Self-Attention Scores**: For queries $Q$, keys $K$, and values $V$, the attention weights are computed as:
 
-    $$A = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}} + M \right)$$
+$$A = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}} + M \right)$$
 
     Here:
 
@@ -270,10 +270,10 @@ Causal transformers undergo two distinct stages of development: **pre-training**
 **Learning Process**:
 
 -   The model maximizes the likelihood of the correct token at each position: 
-    $$P(x_1, x_2, \dots, x_T) = \prod_{t=1}^T P(x_t | x_1, x_2, \dots, x_{t-1})$$
+$$P(x_1, x_2, \dots, x_T) = \prod_{t=1}^T P(x_t | x_1, x_2, \dots, x_{t-1})$$
 
 -   Training involves minimizing the cross-entropy loss between the predicted probabilities and the ground truth:
-$$\mathcal{L}_{\text{pre-train}} = - \sum_{t=1}^T \log P(x_t | x_1, x_2, \dots, x_{t-1})$$ 
+$$\mathcal{L}_{\text{pre-train}} = - \sum_{t=1}^T \log P(x_t | x_1, x_2, \dots, x_{t-1})$$
 
 Here, $T$ is the total number of tokens in the sequence.
 
@@ -318,7 +318,7 @@ During inference, causal transformers generate text **autoregressively**, meanin
 
 **Decoding Strategies**
 
-1.  **Greedy Decoding**: The simplest decoding method. At each step, the model selects the token with the highest probability: $$x_t = \arg \max P(x_t | x_1, x_2, \dots, x_{t-1})$$
+1.  **Greedy Decoding**: The simplest decoding method. At each step, the model selects the token with the highest probability:$$x_t = \arg \max P(x_t | x_1, x_2, \dots, x_{t-1})$$
     -   Advantage: Computationally efficient and deterministic.
     -   Limitation: May produce repetitive or suboptimal results because it does not explore alternative sequences.
 2.  **Beam Search**: Explores multiple candidate sequences (beams) simultaneously to find the most likely overall sequence. At each step, it keeps the top $k$ beams with the highest cumulative probabilities.
@@ -504,7 +504,7 @@ Quantization involves reducing the precision of numerical representations. In th
 
 **Mathematical Definition**
 
-Given a tensor $X_{f16}$ in 16-bit floating-point precision: $$X_{i8} = \left\lfloor \frac{127 \cdot X_{f16}}{\max |X_{f16}|} \right\rfloor$$ 
+Given a tensor $X_{f16}$ in 16-bit floating-point precision:$$X_{i8} = \left\lfloor \frac{127 \cdot X_{f16}}{\max |X_{f16}|} \right\rfloor$$
 
 where:
 
@@ -745,14 +745,14 @@ Accuracy measures how often the model selects the correct solution from the two 
 
     -   Predicted choice:
 
-        $$text_{predicted\_choice} = \text{argmax}(\text{score1}, \text{score2})$$
+$$text_{predicted\_choice} = \text{argmax}(\text{score1}, \text{score2})$$
 
 3.  **Correctness Check:**
     -   Compare the predicted choice with the label (`0` or `1`) in the dataset:
         -   If the predicted choice matches the label, it is counted as correct.
 4.  **Accuracy Formula:**
     -   Accuracy is the ratio of correct predictions to total predictions:
-    $$\text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Predictions}}$$
+$$\text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Predictions}}$$
 
 ### Example
 
