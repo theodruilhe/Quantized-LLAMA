@@ -106,32 +106,32 @@ def compare_models(results):
     # Plot accuracy
     plt.figure()
     plt.bar(df["description"], df["accuracy"])
-    plt.title(f"Accuracy Comparison on {device}")
+    plt.title(f"Accuracy Comparison on {device} and {model_name}")
     plt.ylabel("Accuracy")
     plt.xlabel("Model")
-    plt.savefig(f"figures/accuracy_comparison_{device}.png")
+    plt.savefig(f"figures/accuracy_comparison_{device}_{model_name}.png")
     plt.show()
 
     # Plot latency
     plt.figure()
     plt.bar(df["description"], df["avg_latency"])
-    plt.title(f"Latency Comparison on {device}")
+    plt.title(f"Latency Comparison on {device} and {model_name}")
     plt.ylabel("Latency (seconds)")
     plt.xlabel("Model")
-    plt.savefig(f"figures/latency_comparison_{device}.png")
+    plt.savefig(f"figures/latency_comparison_{device}_{model_name}.png")
     plt.show()
 
     # Plot memory usage
     plt.figure()
     plt.bar(df["description"], df["avg_memory_usage"])
-    plt.title(f"Memory Usage Comparison on {device}")
+    plt.title(f"Memory Usage Comparison on {device} and {model_name}")
     plt.ylabel("Memory Usage (MB)")
     plt.xlabel("Model")
-    plt.savefig(f"figures/memory_usage_comparison_{device}.png")
+    plt.savefig(f"figures/memory_usage_comparison_{device}_{model_name}.png")
     plt.show()
 
 if __name__ == "__main__":
-    model_name = "meta-llama/Llama-3.1-8B"
+    model_name = "meta-llama/Llama-3.2-1B"
     tokenizer = AutoTokenizer.from_pretrained(model_name, token=HF_TOKEN)
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     device = "cpu"
