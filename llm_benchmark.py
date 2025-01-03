@@ -45,7 +45,7 @@ def evaluate_quality(generated, references):
 
 if __name__ == "__main__":
     # Load dataset and prompts
-    dataset = load_dataset("the_pile", split="validation[:100]")  # Adjust as needed
+    dataset = load_dataset("EleutherAI/the_pile", split="validation[:100]")
     prompts = [example["text"][:100] for example in dataset if "text" in example]  # Use first 100 chars as prompt
 
     # Load models

@@ -41,16 +41,21 @@ def evaluate_model(model, tokenizer, prompt, model_type, device="cuda"):
     return memory_usage, inference_time, generated_text
 
 # Main comparison function
-def compare_models(original_model_name, quantized_model_path, tokenizer, prompt, hf_token, device="cuda"):
+def compare_models(original_model_path, quantized_model_path, tokenizer, prompt, hf_token, device="cuda"):
     # Load and evaluate the original model
     print("\nLoading original model...")
-    original_model = AutoModelForCausalLM.from_pretrained(original_model_name, token=hf_token).to(device)
+    original_model = ORTModelForCausalLM.from_pretrained(
+        original_model_path,
+        local_files_only=True,
+        provider="CUDAExecutionProvider"
+    )
     original_memory, original_time, original_text = evaluate_model(original_model, tokenizer, prompt, "Original", device=device)
 
     # Load and evaluate the quantized model
     print("\nLoading quantized model...")
     quantized_model = ORTModelForCausalLM.from_pretrained(
         quantized_model_path,
+        local_files_only=True,
         provider="CUDAExecutionProvider"
     )
     quantized_memory, quantized_time, quantized_text = evaluate_model(quantized_model, tokenizer, prompt, "Quantized", device=device)
@@ -98,13 +103,14 @@ def save_and_visualize_results(results, report_path="REPORT.md", plot_path="perf
 if __name__ == "__main__":
     # Configurations
     HF_TOKEN = load_token()
-    original_model_name = "meta-llama/Llama-3.1-8B"  # Hugging Face model path
+    # original_model_name = "meta-llama/Llama-3.1-8B"  # Hugging Face model path
     quantized_model_path = "./quantized_model"       # Path to quantized model
+    original_model_path = "./models--meta-llama--Llama-3.1-8B/snapshots/"
     prompt = "Once upon a time"
-    tokenizer = AutoTokenizer.from_pretrained(original_model_name, token=HF_TOKEN)
+    tokenizer = AutoTokenizer.from_pretrained(original_model_path, token=HF_TOKEN)
 
     # Compare models
-    results = compare_models(original_model_name, quantized_model_path, tokenizer, prompt, HF_TOKEN, device="cuda")
+    results = compare_models(quantized_model_path, quantized_model_path, tokenizer, prompt, HF_TOKEN, device="cuda")
 
     # Save and visualize results
     save_and_visualize_results(results)
