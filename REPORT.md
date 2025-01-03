@@ -55,13 +55,17 @@ The diagram below provides a detailed visualization of the Transformer architect
 -   The self-attention mechanism is the core of the transformer architecture. It allows the model to dynamically focus on relevant parts of the input sequence when generating predictions.
 -   For each token in the input, the self-attention mechanism calculates a weighted sum of all other tokens in the sequence, determining their importance for the current token.
 
-**Mathematical Formulation:** For a given input sequence, the self-attention mechanism computes the output as: $$\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V $$
+**Mathematical Formulation:** For a given input sequence, the self-attention mechanism computes the output as: 
+$$
+\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+$$
 
 Where
 
--   $Q$(Query), $K$(Key), and $V$(Value) are matrices derived from the input embeddings: $$
-    Q = XW^Q, \quad K = XW^K, \quad V = XW^V
-    $$Here, $W^Q, W^K, W^V$are learnable weight matrices.
+-   $Q$(Query), $K$(Key), and $V$(Value) are matrices derived from the input embeddings: 
+    $$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$
+
+    Here, $W^Q$, $W^K$, $W^V$ are learnable weight matrices.
 
 -   $d_k$: Dimensionality of the key vectors, used to scale the dot product for numerical stability.
 
@@ -77,11 +81,11 @@ Instead of performing a single self-attention calculation, the transformer uses 
 
 **Formula for Multi-Head Attention:**
 
-$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h)W^O$Where each attention head is computed as: $$
-\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
-$$
+$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h)W^O$$
 
--   $W_i^Q, W_i^K, W_i^V$: Learnable projection matrices for the $i$-th head.
+Where each attention head is computed as: $$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
+
+-   $W_i^$, $W_i^K$, $W_i^V$: Learnable projection matrices for the $i$-th head.
 
 -   $W^O$: Output projection matrix.
 
@@ -93,7 +97,8 @@ By concatenating and projecting the results, the model integrates diverse attent
 
 Transformers lack inherent sequential order due to their fully parallelized processing. To inject order into the input, positional encodings are added to the input embeddings. These encodings are designed to help the model distinguish the position of each token in the sequence.
 
-**Formula for Positional Encoding:** $$\text{PE}_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d}}\right), \quad \text{PE}_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d}}\right)$$
+**Formula for Positional Encoding:** 
+$$\text{PE}_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d}}\right), \quad \text{PE}_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d}}\right)$$
 
 Where:
 
@@ -113,9 +118,9 @@ After the self-attention mechanism, the transformer applies a position-wise feed
 
 Where:
 
--   $W_1, W_2$: Weight matrices.
+-   $W_1$, $W_2$: Weight matrices.
 
--   $b_1, b_2$: Bias terms.
+-   $b_1$, $b_2$: Bias terms.
 
 This FFN is applied independently to each position in the sequence.
 
@@ -123,9 +128,8 @@ This FFN is applied independently to each position in the sequence.
 
 #### **5. Layer Normalization and Residual Connections**
 
-**Residual Connections:** Add the input of a layer directly to its output to improve gradient flow: $$
-\text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))
-$$
+**Residual Connections:** Add the input of a layer directly to its output to improve gradient flow: 
+$$\text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))$$
 
 **Layer Normalization:** Stabilizes training by normalizing the outputs of each sublayer (e.g., attention, FFN) across the feature dimension.
 
@@ -163,9 +167,9 @@ In causal transformers, the self-attention mechanism is modified to enforce a st
 
 #### **1. Autoregressive Modeling**
 
-**Autoregressive models** generate text sequentially, one token at a time. The model predicts the next token $x_t$based on all previously generated tokens $x_1$, $x_2$, $\dots$, $x_{t-1}$. This process is fundamental for tasks like text generation, where output coherence depends on maintaining sequential dependencies.
+**Autoregressive models** generate text sequentially, one token at a time. The model predicts the next token $x_t$based on all previously generated tokens $x_1$ , $x_2$ , $\dots$ , $x_{t-1}$ . This process is fundamental for tasks like text generation, where output coherence depends on maintaining sequential dependencies.
 
-The conditional probability of generating a sequence $x = [x_1, x_2, \dots, x_T]$is factorized as:
+The conditional probability of generating a sequence $$x = [x_1, x_2, \dots, x_T]$$ is factorized as:
 
 $$
 P(x_1, x_2, \dots, x_T) = \prod_{t=1}^{T} P(x_t | x_1, x_2, \dots, x_{t-1})
@@ -175,10 +179,10 @@ $$
 
 **Causal Attention Mask**
 
-The causal attention mask is a binary matrix used in the self-attention mechanism to mask out future tokens during training and inference. It ensures that token $x_t$only attends to tokens $x_1$through $x_t$, blocking access to $x_{t+1}$, $x_{t+2}$, $...$in the sequence. The attention mask is implemented as an **upper triangular matrix** with values:
+The causal attention mask is a binary matrix used in the self-attention mechanism to mask out future tokens during training and inference. It ensures that token $x_t$only attends to tokens $x_1$through $x_t$, blocking access to $x_{t+1}$ , $x_{t+2}$ ,  $...$ in the sequence. The attention mask is implemented as an **upper triangular matrix** with values:
 
--   `1` (allows attention) for tokens at or before the current position $t$.
--   `0` (blocks attention) for tokens after $t$.
+-   `1` (allows attention) for tokens at or before the current position $t$ .
+-   `0` (blocks attention) for tokens after $t$ .
 
 **Mathematical Representation:** For a sequence of 4 tokens, the causal attention mask $M$is:
 
@@ -194,11 +198,11 @@ $$
 
 **Intuition:**
 
--   At position $t = 1$, the first token $x_1$can only attend to itself.
+-   At position $t = 1$, the first token $x_1$ can only attend to itself.
 
--   At position $t = 2$, the second token $x_2$can attend to $x_1$and $x_2$.
+-   At position $t = 2$, the second token $x_2$ can attend to $x_1$and $x_2$.
 
--   At position $t = 3$, the third token $x_3$can attend to $x_1$, $x_2$, and $x_3$.
+-   At position $t = 3$, the third token $x_3$ can attend to $x_1$, $x_2$, and $x_3$.
 
 This process continues sequentially until the end of the sequence.
 
@@ -208,11 +212,11 @@ The causal attention mask is applied directly to the scaled dot-product attentio
 
 1.  **Self-Attention Scores**: For queries $Q$, keys $K$, and values $V$, the attention weights are computed as:
 
-    \$$A = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}} + M \right)$
+    $$A = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}} + M \right)$$
 
     Here:
 
-    -   $\frac{QK^T}{\sqrt{d_k}}$are the raw dot-product attention scores scaled by $d_k$, the dimensionality of the keys.
+    -   $\frac{QK^T}{\sqrt{d_k}}$ are the raw dot-product attention scores scaled by $d_k$ , the dimensionality of the keys.
     -   $M$ is the causal attention mask (with $-∞$ values for masked positions, which effectively sets the corresponding attention weights to 0 after the softmax).
 
 2.  **Resulting Attention**: The attention weights ensure that each token only attends to tokens up to its position in the sequence. For example:
@@ -220,7 +224,8 @@ The causal attention mask is applied directly to the scaled dot-product attentio
     -   Token $x_1$ attends only to itself.
     -   Token $x_2$ attends to $x_1$ and $x_2$, and so on.
 
-3.  **Final Weighted Sum**: The attention scores are multiplied with $V$(the values) to compute the output for each position: $$\text{Attention Output} = A \cdot V$$
+3.  **Final Weighted Sum**: The attention scores are multiplied with $V$(the values) to compute the output for each position: 
+$$\text{Attention Output} = A \cdot V$$
 
 ------------------------------------------------------------------------
 
@@ -230,15 +235,17 @@ Causal transformers undergo two distinct stages of development: **pre-training**
 
 **Pre-training**
 
-**Objective** Causal transformers are initially trained on massive, unlabelled datasets (e.g., books, web data, or research papers) using an **autoregressive language modeling objective**. The goal is to predict the next token $x_t$ given the previous tokens $x_1$ , $x_2$ , $\dots, x_{t-1}$.
+**Objective** Causal transformers are initially trained on massive, unlabelled datasets (e.g., books, web data, or research papers) using an **autoregressive language modeling objective**. The goal is to predict the next token $x_t$ given the previous tokens $x_1$ , $x_2$ , $\dots$, x_{t-1}$.
 
 **Learning Process**:
 
--   The model maximizes the likelihood of the correct token at each position: $$
-      P(x_1, x_2, \dots, x_T) = \prod_{t=1}^T P(x_t | x_1, x_2, \dots, x_{t-1})
-      $$
+-   The model maximizes the likelihood of the correct token at each position: 
+    $$P(x_1, x_2, \dots, x_T) = \prod_{t=1}^T P(x_t | x_1, x_2, \dots, x_{t-1})$$
 
--   Training involves minimizing the cross-entropy loss between the predicted probabilities and the ground truth:$$\mathcal{L}_{\text{pre-train}} = - \sum_{t=1}^T \log P(x_t | x_1, x_2, \dots, x_{t-1})$$ Here, $T$ is the total number of tokens in the sequence.
+-   Training involves minimizing the cross-entropy loss between the predicted probabilities and the ground truth:
+$$\mathcal{L}_{\text{pre-train}} = - \sum_{t=1}^T \log P(x_t | x_1, x_2, \dots, x_{t-1})$$ 
+
+Here, $T$ is the total number of tokens in the sequence.
 
 **What the Model Learns**
 
@@ -329,7 +336,7 @@ LLAMA (Large Language Model Meta AI) is a family of causal transformers develope
 ### LLAMA vs. Other Transformers:
 
 | Feature          | LLAMA              | GPT (OpenAI)       | BERT                |
-|-----------------------------------|----------------------------------------------|------------------------------------------|--------------------------------------------|
+|------------------|-------------------|------------------|-----------------------------------------------------|
 | Architecture     | Causal Transformer | Causal Transformer | Encoder Transformer |
 | Usage            | Text Generation    | Text Generation    | Classification, QA  |
 | Efficiency Focus | High               | Moderate           | Moderate            |
@@ -381,7 +388,7 @@ The LLaMA architecture builds upon the Transformer model with several enhancemen
 #### Model Configurations
 
 | **Model** | **Parameters** | **Dimensions** | **Heads** | **Layers** | **Learning Rate** | **Batch Size** | **Tokens (Trillions)** |
-|----------------------------------------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|----------------------------------------|----------------------------------------|-----------------------------------------------------------------------|-------------------------------------------------------|-----------------------------------------------------------------------------------|
+|---------|---------|---------|---------|---------|---------|---------|---------|
 | LLaMA-7B | 6.7B | 4096 | 32 | 32 | 3.0e-4 | 4M | 1.0T |
 | LLaMA-13B | 13.0B | 5120 | 40 | 40 | 3.0e-4 | 4M | 1.0T |
 | LLaMA-33B | 32.5B | 6656 | 52 | 60 | 1.5e-4 | 4M | 1.4T |
@@ -446,7 +453,7 @@ The representation of neural network weights using 8 bits instead of the standar
 
 #### Challenges of Large LLMs
 
--   Large Language Models (LLMs) like LLAMA often exceed billions of parameters (from 7 to 65 billion parameters), demanding enormous computational resources for inference.
+-   Large Language Models (LLMs) like LLAMA often exceed billions of parameters (from 7 to 405 billion parameters), demanding enormous computational resources for inference.
 -   Traditional inference in 16-bit or 32-bit precision requires substantial GPU memory, making such models inaccessible to researchers or organizations with limited resources.
 
 #### Benefits of 8-bit Quantization
@@ -459,29 +466,42 @@ The representation of neural network weights using 8 bits instead of the standar
 
 #### Quantization Basics
 
-Quantization involves reducing the precision of numerical representations. In the case of 8-bit quantization: - Neural network weights and activations are represented with 8 bits instead of 16 or 32 bits. - Integer arithmetic replaces floating-point arithmetic, improving efficiency.
+Quantization involves reducing the precision of numerical representations. In the case of 8-bit quantization:
 
-##### Mathematical Definition
+-   Neural network weights and activations are represented with 8 bits instead of 16 or 32 bits.
 
-Given a tensor $X_{f16}$ in 16-bit floating-point precision: $$
-X_{i8} = \left\lfloor \frac{127 \cdot X_{f16}}{\max |X_{f16}|} \right\rfloor
-$$ where: - $X_{i8}$: Quantized tensor in 8-bit integers. - $\max |X_{f16}|$: Maximum absolute value in the 16-bit tensor. - $\lfloor \cdot \rfloor$: Floor operation.
+-   Integer arithmetic replaces floating-point arithmetic, improving efficiency.
+
+**Mathematical Definition**
+
+Given a tensor $X_{f16}$ in 16-bit floating-point precision: $$X_{i8} = \left\lfloor \frac{127 \cdot X_{f16}}{\max |X_{f16}|} \right\rfloor$$ 
+
+where:
+
+-   $X_{i8}$: Quantized tensor in 8-bit integers.
+
+-   $\max |X_{f16}|$: Maximum absolute value in the 16-bit tensor.
+
+-   $\lfloor \cdot \rfloor$: Floor operation.
 
 #### LLM.int8() Methodology
 
 The paper introduces a two-part quantization strategy called **LLM.int8()**, which addresses key challenges at scale:
 
-##### **1. Vector-wise Quantization**
+**1. Vector-wise Quantization**
 
 -   Assigns separate scaling constants to each row and column of matrices during matrix multiplications.
 -   Reduces precision loss by normalizing individual components of the computation.
--   Denormalization occurs after matrix multiplication to recover scaled outputs: $$
-    C_{f16} \approx \frac{C_{i32}}{c_{x} \otimes c_{w}}
-    $$
+-   Denormalization occurs after matrix multiplication to recover scaled outputs: 
+$$C_{f16} \approx \frac{C_{i32}}{c_{x} \otimes c_{w}}$$
 
-where: - $c_x$: Row-wise scaling constants. - $c_w$: Column-wise scaling constants.
+where:
 
-##### **2. Mixed-Precision Decomposition**
+-   $c_x$: Row-wise scaling constants.
+
+-   $c_w$: Column-wise scaling constants.
+
+**2. Mixed-Precision Decomposition**
 
 -   Isolates outlier dimensions (rare, high-magnitude features) into a 16-bit matrix multiplication, while the remaining 99.9% of dimensions use 8-bit precision.
 -   Ensures precision for critical computations without sacrificing memory efficiency.
@@ -512,56 +532,226 @@ The methodology was evaluated on LLMs ranging from 125M to 175B parameters acros
 | 6.7B                | 13.30           | 14.59       | 13.24      |
 | 13B                 | 12.45           | 19.08       | 12.45      |
 
--   **Observation:** Standard quantization methods fail to maintain precision as model size increases. LLM.int8() preserves baseline performance.
+**Observation:** Standard quantization methods fail to maintain precision as model size increases. LLM.int8() preserves baseline performance.
 
 ### Advantages of LLM.int8()
 
-1.  **Scalability:**
-    -   Enables inference for models up to 175B parameters on consumer-grade GPUs.
-2.  **No Performance Degradation:**
-    -   Maintains full precision performance for most tasks.
-3.  **Cost Reduction:**
-    -   Reduces the financial and environmental costs of operating LLMs at scale.
+1.  **Scalability:** Enables inference for models up to 175B parameters on consumer-grade GPUs.
+2.  **No Performance Degradation:** Maintains full precision performance for most tasks.
+3.  **Cost Reduction:** Reduces the financial and environmental costs of operating LLMs at scale.
 
 ### References
 
 -   Tim Dettmers et al., "[LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale](https://arxiv.org/abs/2208.07339)"
 
-|  |
-|------------------------------------------------------------------------|
-| \## Implementation |
-| \### Environment Setup |
-| 1\. Install the required libraries: |
-| `bash pip install torch transformers bitsandbytes` |
-| 2\. Clone the Bitsandbytes repository: |
-| `bash git clone https://github.com/timdettmers/bitsandbytes.git cd bitsandbytes` |
-| 3\. Download the pre-trained LLAMA model: |
-| \`\`\` python from transformers import AutoModelForCausalLM, AutoTokenizer |
-| model_name = "meta-llama/Llama-2-7b-hf" \# Example model model = AutoModelForCausalLM.from_pretrained(model_name) tokenizer = AutoTokenizer.from_pretrained(model_name) \`\`\` |
-| 4\. Test the baseline model with a simple text generation task: |
-| `python input_text = "Once upon a time" inputs = tokenizer(input_text, return_tensors="pt") outputs = model.generate(**inputs) print(tokenizer.decode(outputs[0], skip_special_tokens=True))` |
+## Implementation:
 
-### 8-bit Quantization
+### Overview
 
-1.  Load the LLAMA model with 8-bit quantization:
+The file `quantize_model.py` provides a streamlined way to load and compare pre-trained language models in both quantized and full-precision formats. This implementation leverages Hugging Face's `transformers` library, along with `BitsAndBytesConfig` for efficient 8-bit quantization.
 
-    ``` python
-    quantized_model = AutoModelForCausalLM.from_pretrained(
-        model_name, 
-        load_in_8bit=True,
-        device_map="auto"
-    )
-    ```
+### Key Components
 
-2.  Perform inference with the quantized model:
+#### 1. Loading Quantized Models
 
-    ``` python
-    inputs = tokenizer(input_text, return_tensors="pt").to("cuda")
-    outputs = quantized_model.generate(**inputs)
-    print(tokenizer.decode(outputs[0], skip_special_tokens=True))
-    ```
+-   **Function:** `load_quantized_model`
+-   **Purpose:** Reduces memory usage and improves efficiency by converting model weights to 8-bit integers.
+-   **Implementation:**
+    -   Uses `BitsAndBytesConfig` to enable 8-bit loading.
+    -   Maintains accuracy by handling outlier features through the `llm_int8_threshold` parameter.
+    -   Returns a lightweight, memory-efficient model suitable for resource-constrained environments.
+
+#### 2. Loading Full-Precision Models
+
+-   **Function:** `load_full_model`
+-   **Purpose:** Loads the full-precision version of the model for high-fidelity tasks requiring maximum accuracy.
+-   **Implementation:**
+    -   Configured for FP16 to optimize memory usage on GPUs.
+    -   Uses `low_cpu_mem_usage` to minimize memory overhead during model loading.
+    -   Allows flexible deployment by supporting both CPU and GPU devices.
+
+### Usage
+
+#### 1. Run the Script
+
+Execute the script to load both quantized and full-precision versions of a specified model:
+
+``` bash
+python quantize_model.py
+```
+
+#### 2. Specify the Model
+
+Update the `model_name` variable to choose a pre-trained model:
+
+``` python
+model_name = "meta-llama/Llama-3.1-8B"
+```
+
+#### 3. Customize Device
+
+Automatically detects and uses GPU if available, falling back to CPU otherwise:
+
+``` python
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+```
+
+## Example Workflow
+
+### Load Models
+
+Both quantized and full models are loaded into memory:
+
+``` python
+quantized_model = load_quantized_model(model_name, HF_TOKEN)
+full_model = load_full_model(model_name, HF_TOKEN, device)
+```
+
+### Generate Text
+
+Use the loaded models for tasks like text generation:
+
+``` python
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+inputs = tokenizer("Once upon a time", return_tensors="pt").to(device)
+outputs = full_model.generate(**inputs, max_length=50)
+print(tokenizer.decode(outputs[0]))
+```
+
+## Evaluate Performance
+
+### Overview
+
+The `evaluate_model.py` file provides a systematic framework for evaluating the performance of quantized and full-precision models on the **PIQA (Physical Interaction Question Answering)** dataset. The script measures critical metrics such as accuracy, latency, and memory usage and generates visual comparisons for better insights.
+
+### Key Components
+
+#### 1. Evaluating a Model on PIQA
+
+-   **Function:** `evaluate_model_on_piqa`
+-   **Purpose:** This function evaluates a given model on the PIQA dataset, tracking its performance and resource usage.
+-   **Key Features:**
+    -   **Accuracy Calculation:** Determines the percentage of correctly predicted answers.
+    -   **Latency Measurement:** Measures the time taken to process each question.
+    -   **Memory Usage Tracking:** Records the peak memory utilized during inference.
+    -   **Progress Tracking:** Displays progress using a visual progress bar with `tqdm`.
+-   **Implementation Details:**
+    -   Loads the PIQA validation dataset using the Hugging Face `datasets` library.
+    -   For each question in the dataset, the model compares scores for two provided answers and predicts the most plausible one.
+    -   Returns a summary of metrics including accuracy, average latency, and memory usage.
+
+#### 2. Comparing Models
+
+-   **Function:** `compare_models`
+-   **Purpose:** Compares the performance of multiple models and generates visualizations.
+-   **Key Features:**
+    -   **Summary Table:** Outputs a performance table for all models evaluated.
+    -   **Visualization:** Generates bar charts for:
+        -   Accuracy comparison.
+        -   Latency comparison.
+        -   Memory usage comparison.
+    -   **File Saving:** Saves results and plots in `figures/` directory for reporting purposes.
+
+#### Usage
+
+**1. Evaluate a Model** The script evaluates both quantized and full-precision models:
+
+``` python
+full_results = evaluate_model_on_piqa(full_model, model_name, tokenizer, device, "Non-Quantized Model")
+quantized_results = evaluate_model_on_piqa(quantized_model, model_name, tokenizer, device, "Quantized Model")
+```
+
+**2. Compare Models** The comparison is made using the results collected from both models:
+
+``` python
+compare_models([quantized_results, full_results])
+```
+
+**3. Run the Script** Execute the script to load models, evaluate them on PIQA, and generate visual comparisons:
+
+``` bash
+python evaluate_model.py
+```
+
+## PIQA Dataset and Accuracy Computation
+
+### Overview of the PIQA Dataset
+
+PIQA (Physical Interaction Question Answering) is a dataset designed to evaluate a model's ability to reason about physical interactions in the real world. It focuses on common-sense knowledge related to how objects are used and how physical processes occur.
+
+### Dataset Details
+
+**Structure:**
+
+Each entry in the dataset contains:
+
+-   **Goal:** A description of a physical situation or task (e.g., "How do you light a match?").
+-   **Solution 1 (sol1):** A possible answer to the goal.
+-   **Solution 2 (sol2):** Another possible answer to the goal.
+-   **Label:** The correct answer, represented as `0` (sol1) or `1` (sol2).
+
+**Size:**
+
+-   Validation set contains 1,838 examples.
+-   Designed to challenge a model’s ability to perform reasoning beyond surface-level text matching.
+
+### Objective
+
+The task is to select the most plausible solution (`sol1` or `sol2`) for a given goal based on common-sense reasoning.
 
 ------------------------------------------------------------------------
+
+### Accuracy Computation
+
+#### Process
+
+Accuracy measures how often the model selects the correct solution from the two provided options.
+
+1.  **Score Computation:**
+    -   For each example, the model generates scores for both solutions (`sol1` and `sol2`) based on its internal representations.
+    -   Scores are typically derived from the logits of the model’s output.
+2.  **Prediction:**
+    -   The solution with the higher score is selected as the model’s prediction.
+
+    -   Predicted choice:
+
+        $$text_{predicted\_choice} = \text{argmax}(\text{score1}, \text{score2})$$
+
+3.  **Correctness Check:**
+    -   Compare the predicted choice with the label (`0` or `1`) in the dataset:
+        -   If the predicted choice matches the label, it is counted as correct.
+4.  **Accuracy Formula:**
+    -   Accuracy is the ratio of correct predictions to total predictions:
+    $$\text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Predictions}}$$
+
+### Example
+
+**Input:**
+
+-   Goal: "How do you light a candle?"
+-   sol1: "Use a lighter to ignite the wick."
+-   sol2: "Blow air onto the wick."
+-   Label: `0` (sol1 is correct).
+
+**Model Output:**
+
+-   Score1: 0.85 (higher score for sol1).
+-   Score2: 0.45.
+-   Predicted Choice: `0`.
+-   Result: Correct prediction.
+
+### Significance of PIQA Accuracy
+
+-   **Evaluates Common-Sense Reasoning:** Tests the model's ability to understand physical interactions and causal relationships.
+-   **Task-Oriented:** Goes beyond generic text understanding to address practical, real-world scenarios.
+-   **Comparison Metric:** Accuracy provides a straightforward metric to compare the performance of different models.
+
+### Limitations
+
+-   **Ambiguity:** Some examples may have subjective interpretations of the correct answer.
+-   **Context:** The dataset assumes basic knowledge of physical processes, which models might lack without pre-training on relevant data.
+
+By measuring accuracy on the PIQA dataset, we assess a model's capability to perform physical reasoning and generalize its understanding of real-world tasks.
 
 ## Results
 
@@ -584,16 +774,3 @@ The methodology was evaluated on LLMs ranging from 125M to 175B parameters acros
 -   [Flash Attention v1 Paper](https://arxiv.org/abs/2205.14135)
 -   [Flash Attention v2 Paper](https://arxiv.org/abs/2307.08691)
 -   [Hugging Face Flash Attention Documentation](https://huggingface.co/docs/text-generation-inference/conceptual/flash_attention)
-
-------------------------------------------------------------------------
-
-## Future Work
-
--   Integrate **Flash Attention** for improved efficiency (if time permits).
--   Test the quantized model on larger datasets and additional text generation benchmarks.
-
-------------------------------------------------------------------------
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
