@@ -859,24 +859,6 @@ The table below summarizes the average performance metrics for each model and co
 4. **Scalability:**
    - As the model size increases from 1B to 8B, both accuracy and memory usage increase. This highlights the scalability challenges of larger models, especially in memory-constrained or latency-critical applications.
 
----
-
-#### Recommendations
-
-1. **For High Accuracy:**
-   - Use full-precision models like `Llama-3.1-8B` or `Llama-3.2-3B` where accuracy is paramount, particularly in applications requiring complex reasoning.
-
-2. **For Resource-Constrained Environments:**
-   - Deploy quantized models to reduce memory usage and enable scaling on smaller hardware. These models are particularly suitable for batch inference or offline processing tasks.
-
-3. **Latency-Critical Scenarios:**
-   - Non-quantized models are preferable for real-time applications due to their significantly lower latency.
-
----
-
-#### Broader Implications
-The results highlight the effectiveness of quantization in reducing memory usage while maintaining comparable accuracy. However, the observed latency increase for quantized models suggests that further optimization techniques, such as mixed precision or hardware-specific quantization accelerators, could enhance performance.
-
 --- 
 
 ## Resources and References
