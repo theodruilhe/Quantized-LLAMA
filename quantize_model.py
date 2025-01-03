@@ -13,6 +13,7 @@ def load_token(file_path="credentials.txt"):
                 return line.strip().split("=")[1]
     raise ValueError("HUGGINGFACE_TOKEN not found in the file")
 
+
 def quantize_and_save_model(model_name, hf_token, export_path):
     # Define export path
     export_path = Path(export_path)
@@ -47,6 +48,7 @@ def quantize_and_save_model(model_name, hf_token, export_path):
     model.save_pretrained(export_path)
     tokenizer.save_pretrained(export_path)
     print(f"[INFO] Quantized model and tokenizer saved successfully to {export_path}")
+
 
 if __name__ == "__main__":
     # Load the token

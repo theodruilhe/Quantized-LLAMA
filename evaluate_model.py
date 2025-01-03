@@ -105,7 +105,7 @@ if __name__ == "__main__":
     HF_TOKEN = load_token()
     # original_model_name = "meta-llama/Llama-3.1-8B"  # Hugging Face model path
     quantized_model_path = "./quantized_model"       # Path to quantized model
-    original_model_path = "./models--meta-llama--Llama-3.1-8B/snapshots/"
+    original_model_path = "./llama_3.1_8B"
     prompt = "Once upon a time"
     tokenizer = AutoTokenizer.from_pretrained(original_model_path, token=HF_TOKEN)
 
