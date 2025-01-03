@@ -1,3 +1,4 @@
+import os
 import time
 import torch
 from datasets import load_dataset
@@ -13,7 +14,7 @@ logging.getLogger("transformers").setLevel(logging.ERROR)
 HF_TOKEN = load_token()
 
 
-def evaluate_model_on_piqa(model, tokenizer, device, description,  max_examples = 100):
+def evaluate_model_on_piqa(model, model_name, tokenizer, device, description, max_examples = 1838):
     """
     Evaluates a model on the PIQA dataset for accuracy, latency, and memory usage.
     """
@@ -21,7 +22,7 @@ def evaluate_model_on_piqa(model, tokenizer, device, description,  max_examples 
     total_predictions = 0
     latencies = []
     memory_usages = []
-
+    print("\n")
     print(f"Evaluating {description} on PIQA dataset...")
     # Load the PIQA validation dataset
     dataset = load_dataset("piqa", split="validation", trust_remote_code=True)
@@ -74,16 +75,18 @@ def evaluate_model_on_piqa(model, tokenizer, device, description,  max_examples 
     avg_latency = sum(latencies) / len(latencies)
     avg_memory_usage = sum(memory_usages) / len(memory_usages) if memory_usages else None
 
-    print(f"\n=== {description} ===")
+    print(f"\n=== {description} model: {model_name}, device: {device} ===")
     print(f"Accuracy on PIQA: {accuracy:.4f}")
     print(f"Average Latency: {avg_latency:.4f} seconds")
     print(f"Average Memory Usage: {avg_memory_usage:.2f} MB")
+    print("\n")
 
     return {
         "description": description,
         "accuracy": accuracy,
         "avg_latency": avg_latency,
         "avg_memory_usage": avg_memory_usage,
+        "device": device
     }
 
 
@@ -98,43 +101,48 @@ def compare_models(results):
     print("\n=== Performance Comparison ===")
     print(df)
 
+    os.makedirs("figures", exist_ok=True)
+
     # Plot accuracy
     plt.figure()
     plt.bar(df["description"], df["accuracy"])
-    plt.title("Accuracy Comparison")
+    plt.title(f"Accuracy Comparison on {device}")
     plt.ylabel("Accuracy")
     plt.xlabel("Model")
+    plt.savefig(f"figures/accuracy_comparison_{device}.png")
     plt.show()
 
     # Plot latency
     plt.figure()
     plt.bar(df["description"], df["avg_latency"])
-    plt.title("Latency Comparison")
+    plt.title(f"Latency Comparison on {device}")
     plt.ylabel("Latency (seconds)")
     plt.xlabel("Model")
+    plt.savefig(f"figures/latency_comparison_{device}.png")
     plt.show()
 
     # Plot memory usage
     plt.figure()
     plt.bar(df["description"], df["avg_memory_usage"])
-    plt.title("Memory Usage Comparison")
+    plt.title(f"Memory Usage Comparison on {device}")
     plt.ylabel("Memory Usage (MB)")
     plt.xlabel("Model")
+    plt.savefig(f"figures/memory_usage_comparison_{device}.png")
     plt.show()
 
-
 if __name__ == "__main__":
-    model_name = "meta-llama/Llama-3.1-70B"
+    model_name = "meta-llama/Llama-3.1-8B"
     tokenizer = AutoTokenizer.from_pretrained(model_name, token=HF_TOKEN)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cpu"
 
     # Load models
-    full_model = load_full_model(model_name, HF_TOKEN)
+    full_model = load_full_model(model_name, HF_TOKEN, device)
     quantized_model = load_quantized_model(model_name, HF_TOKEN)
 
     # Evaluate models on PIQA
-    full_results = evaluate_model_on_piqa(full_model, tokenizer, device, "Non-Quantized Model")
-    quantized_results = evaluate_model_on_piqa(quantized_model, tokenizer, device, "Quantized Model")
+    full_results = evaluate_model_on_piqa(full_model, model_name, tokenizer, device, "Non-Quantized Model")
+    quantized_results = evaluate_model_on_piqa(quantized_model, model_name,tokenizer, device, "Quantized Model")
 
     # Compare results
     compare_models([quantized_results, full_results])
