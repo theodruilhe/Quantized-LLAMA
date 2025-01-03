@@ -54,23 +54,19 @@ This project focuses on optimizing the inference process of Large Language Model
 
 ### Potential Use on CPU
 
-Quantized models hold significant promise for CPU-based inference, particularly in scenarios where GPU resources are unavailable or cost-prohibitive. The reduced memory footprint of quantized models could make them highly efficient for inference on devices with limited resources, such as laptops, edge devices, or standard servers.
+Quantized models could be a game-changer for CPU-based inference, especially in situations where GPUs aren't available or are too expensive. By using less memory, quantized models might be a great fit for devices like laptops, edge hardware, or regular servers that have limited resources.
 
-However, as the current implementation relies on the `bitsandbytes` library, which supports GPU-only operations, I could not test the quantized model on my Apple M1 CPU. This limitation prevented direct evaluation of the model's performance on CPU hardware.
+Unfortunately, since the current setup relies on the `bitsandbytes` library—which only works with GPUs—I wasn’t able to test the quantized model on my Apple M1 CPU. This limitation meant I couldn’t see how well the model performs on a CPU directly.
 
 ---
 
 ### Hypothesis: Quantized Models on CPU
 
-I suppose that quantized models would exhibit **significant latency improvements on CPUs** compared to full-precision models. The reasons for this include:
+I think quantized models could perform **much faster on CPUs** compared to full-precision models.
 
-1. **Smaller Model Size:** The reduced memory footprint of quantized models would result in faster memory access and reduced data movement, which is particularly advantageous on CPUs.
-2. **Integer Arithmetic:** Quantized models leverage integer arithmetic instead of floating-point computations, which is generally more efficient on CPUs that are optimized for such operations.
-3. **Scalability for Edge Devices:** With lower memory requirements, quantized models could be deployed on edge devices, offering faster inference without requiring high-end hardware.
+To test this idea, we’d need to make the quantization process compatible with CPUs and then measure how fast and efficient the models are on those devices. Sadly, I didn’t have the time to dive into this during the project.
 
-Testing this hypothesis would involve adapting the quantization process for CPU compatibility and measuring metrics like latency, memory usage, and accuracy on representative hardware. Unfortunately, due to time constraints, I was unable to explore this avenue in the current project.
-
-Future work should focus on adapting and evaluating the quantized model for CPU environments to validate this hypothesis and unlock broader deployment possibilities.
+In the future, adapting and testing quantized models for CPUs would be a worthwhile step to see if this hypothesis holds true and to open up even more use cases for these models.
 
 ## Deliverables
 
