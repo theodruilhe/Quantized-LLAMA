@@ -1,4 +1,34 @@
-# Optimizing Large Language Model Inference
+# Optimizing Large Language Model Inference with 8-bit Quantization
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Transformers: The Foundation of Modern NLP](#transformers-the-foundation-of-modern-nlp)
+   - [Overview](#overview-1)
+   - [Key Features](#key-features)
+   - [Key Components of Transformers](#key-components-of-transformers)
+3. [Causal Transformers](#causal-transformers)
+   - [Autoregressive Modeling](#autoregressive-modeling)
+   - [Pre-training and Fine-tuning](#pre-training-and-fine-tuning)
+   - [Efficiency Through Decoding](#efficiency-through-decoding)
+4. [LLAMA: Large Language Model Meta AI](#llama-large-language-model-meta-ai)
+   - [Key Features of LLAMA](#key-features-of-llama)
+   - [LLAMA vs. Other Transformers](#llama-vs-other-transformers)
+   - [LLAMA Applications](#llama-applications)
+   - [Training Methodologies of LLAMA](#training-methodologies-of-llama)
+5. [8-bit Quantization for Large Language Models](#8-bit-quantization-for-large-language-models)
+   - [Motivation for 8-bit Quantization](#motivation-for-8-bit-quantization)
+   - [Core Methodology of 8-bit Quantization](#core-methodology-of-8-bit-quantization)
+   - [Experimental Results of the LLM.int8() Methodology Paper](#experimental-results-of-the-llmint8-methodology-paper)
+6. [Implementation](#implementation)
+   - [Loading Models](#loading-models)
+   - [Example Workflow](#example-workflow)
+7. [Evaluate Performance](#evaluate-performance)
+   - [Overview](#overview-2)
+   - [PIQA Dataset and Accuracy Computation](#piqa-dataset-and-accuracy-computation)
+8. [Virtual Machine Specifications](#virtual-machine-specifications)
+9. [Results](#results)
+10. [Resources and References](#resources-and-references)
+
 
 ## Overview
 
