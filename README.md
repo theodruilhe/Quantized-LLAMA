@@ -33,14 +33,14 @@ This project focuses on optimizing the inference process of Large Language Model
 | Llama-3.1-8B   | Quantized Model      | 50.50        | 0.1300          | 7600.00               |
 | Llama-3.1-8B   | Non-Quantized Model  | 51.20        | 0.0475          | 10800.00              |
 
-#### Observations and Summary
+### Observations and Summary
 
 1. **Accuracy:**
    - Full-precision models outperform quantized models by a small margin (~1.5%), with `Llama-3.1-8B` achieving the highest accuracy (51.20%).
    - Quantization retains most of the model's prediction capabilities.
 
 2. **Latency:**
-   - Quantized models show higher latency due to dequantization overhead (e.g., `Llama-3.2-1B` quantized: 0.1500s vs. non-quantized: 0.0500s).
+   - Quantized models show higher latency on GPU due to dequantization overhead (e.g., `Llama-3.2-1B` quantized: 0.1500s vs. non-quantized: 0.0500s).
    - Full-precision models benefit from GPU optimization and are faster.
 
 3. **Memory Usage:**
@@ -50,11 +50,27 @@ This project focuses on optimizing the inference process of Large Language Model
 4. **Scalability:**
    - Larger models improve accuracy but increase memory usage, presenting challenges for deployment in resource-constrained scenarios.
 
-#### Potential Use on CPU
+---
 
-While quantized models offer significant memory savings, their potential use on CPU for inference is highly relevant for environments without access to GPUs. However, the current implementation relies on the `bitsandbytes` library, which is GPU-only and does not support quantization on devices like the Apple M1 chip.
+### Potential Use on CPU
 
-As a result, I could not test the quantized model on my M1-based CPU. Further work is required to adapt and evaluate the performance of quantized models on CPU-based systems. This would enable deployment in a wider range of hardware environments, including laptops and servers without dedicated GPUs. Unfortunately, due to time constraints, this testing was not performed in the current project.
+Quantized models hold significant promise for CPU-based inference, particularly in scenarios where GPU resources are unavailable or cost-prohibitive. The reduced memory footprint of quantized models could make them highly efficient for inference on devices with limited resources, such as laptops, edge devices, or standard servers.
+
+However, as the current implementation relies on the `bitsandbytes` library, which supports GPU-only operations, I could not test the quantized model on my Apple M1 CPU. This limitation prevented direct evaluation of the model's performance on CPU hardware.
+
+---
+
+### Hypothesis: Quantized Models on CPU
+
+I suppose that quantized models would exhibit **significant latency improvements on CPUs** compared to full-precision models. The reasons for this include:
+
+1. **Smaller Model Size:** The reduced memory footprint of quantized models would result in faster memory access and reduced data movement, which is particularly advantageous on CPUs.
+2. **Integer Arithmetic:** Quantized models leverage integer arithmetic instead of floating-point computations, which is generally more efficient on CPUs that are optimized for such operations.
+3. **Scalability for Edge Devices:** With lower memory requirements, quantized models could be deployed on edge devices, offering faster inference without requiring high-end hardware.
+
+Testing this hypothesis would involve adapting the quantization process for CPU compatibility and measuring metrics like latency, memory usage, and accuracy on representative hardware. Unfortunately, due to time constraints, I was unable to explore this avenue in the current project.
+
+Future work should focus on adapting and evaluating the quantized model for CPU environments to validate this hypothesis and unlock broader deployment possibilities.
 
 ## Deliverables
 
