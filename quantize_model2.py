@@ -21,22 +21,23 @@ def load_quantized_model(model_name, hf_token, llm_int8_threshold=6.0):
     return quantized_model
 
 
-def load_full_model(model_name, hf_token):
+def load_full_model(model_name, hf_token, device):
     print("Loading non-quantized model...")
     full_model = AutoModelForCausalLM.from_pretrained(
         model_name,
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16,
         token=hf_token
-    ).to("cuda")
+    ).to(device)
     return full_model
 
 
 if __name__ == "__main__":    
-    model_name = "meta-llama/Llama-3.1-8B"
+    # model_name = "meta-llama/Llama-3.1-8B"
+    model_name = "meta-llama/Llama-3.2-3B"
     tokenizer = AutoTokenizer.from_pretrained(model_name, token=HF_TOKEN)
     prompt = "Machine Learning is"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    quantized_model=load_quantized_model(model_name, HF_TOKEN)
-    full_model=load_full_model(model_name, HF_TOKEN)
+    quantized_model=load_quantized_model(model_name, HF_TOKEN, device)
+    full_model=load_full_model(model_name, HF_TOKEN, device)
