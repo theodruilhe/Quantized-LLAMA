@@ -1,0 +1,3 @@
+description,accuracy,avg_latency,avg_memory_usage,device,model
+Quantized Model,0.5048966267682263,0.08066962437219796,4019.3326450489635,cuda,Llama-3.2-1B
+Non-Quantized Model,0.5048966267682263,0.02184141227028964,4017.358147133838,cuda,Llama-3.2-1B

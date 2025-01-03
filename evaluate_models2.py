@@ -75,7 +75,7 @@ def evaluate_model_on_piqa(model, model_name, tokenizer, device, description, ma
     avg_latency = sum(latencies) / len(latencies)
     avg_memory_usage = sum(memory_usages) / len(memory_usages) if memory_usages else None
 
-    print(f"\n=== {description} model: {model_name}, device: {device} ===")
+    print(f"\n=== {description} - {model_name} - {device} ===")
     print(f"Accuracy on PIQA: {accuracy:.4f}")
     print(f"Average Latency: {avg_latency:.4f} seconds")
     print(f"Average Memory Usage: {avg_memory_usage:.2f} MB")
@@ -86,22 +86,28 @@ def evaluate_model_on_piqa(model, model_name, tokenizer, device, description, ma
         "accuracy": accuracy,
         "avg_latency": avg_latency,
         "avg_memory_usage": avg_memory_usage,
-        "device": device
+        "device": device,
+        "model": model_name
     }
 
 
-def compare_models(results):
+def compare_models(results, model_name):
     """
     Compare models and plot results.
     """
+    os.makedirs("results", exist_ok=True)
+    os.makedirs("figures", exist_ok=True)
+    
     # Create a DataFrame for results
     df = pd.DataFrame(results)
 
     # Print summary table
-    print("\n=== Performance Comparison ===")
+    print(f"\n=== Performance Comparison on {device} and {model_name} ===")
     print(df)
 
-    os.makedirs("figures", exist_ok=True)
+    results_file = f"results/performance_comparison_{device}_{model_name}.csv"
+    df.to_csv(results_file, index=False)
+    print(f"\nResults saved to {results_file}")
 
     # Plot accuracy
     plt.figure()
@@ -132,17 +138,18 @@ def compare_models(results):
 
 if __name__ == "__main__":
     model_name = "meta-llama/Llama-3.2-1B"
+    model_name_short = model_name.split("/")[-1]
     tokenizer = AutoTokenizer.from_pretrained(model_name, token=HF_TOKEN)
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = "cpu"
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    max_examples = 1838
 
     # Load models
     full_model = load_full_model(model_name, HF_TOKEN, device)
     quantized_model = load_quantized_model(model_name, HF_TOKEN)
 
     # Evaluate models on PIQA
-    full_results = evaluate_model_on_piqa(full_model, model_name, tokenizer, device, "Non-Quantized Model")
-    quantized_results = evaluate_model_on_piqa(quantized_model, model_name,tokenizer, device, "Quantized Model")
+    full_results = evaluate_model_on_piqa(full_model, model_name_short, tokenizer, device, "Non-Quantized Model", max_examples)
+    quantized_results = evaluate_model_on_piqa(quantized_model, model_name_short,tokenizer, device, "Quantized Model", max_examples)
 
     # Compare results
-    compare_models([quantized_results, full_results])
+    compare_models([quantized_results, full_results], model_name_short)
