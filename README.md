@@ -33,9 +33,28 @@ This project focuses on optimizing the inference process of Large Language Model
 | Llama-3.1-8B   | Quantized Model      | 50.50        | 0.1300          | 7600.00               |
 | Llama-3.1-8B   | Non-Quantized Model  | 51.20        | 0.0475          | 10800.00              |
 
-### Key Observations
-- Quantized models reduce memory usage significantly (e.g., up to 30% reduction) while maintaining comparable accuracy to full-precision models.
-- Full-precision models exhibit lower latency, making them more suitable for real-time applications.
+#### Observations and Summary
+
+1. **Accuracy:**
+   - Full-precision models outperform quantized models by a small margin (~1.5%), with `Llama-3.1-8B` achieving the highest accuracy (51.20%).
+   - Quantization retains most of the model's prediction capabilities.
+
+2. **Latency:**
+   - Quantized models show higher latency due to dequantization overhead (e.g., `Llama-3.2-1B` quantized: 0.1500s vs. non-quantized: 0.0500s).
+   - Full-precision models benefit from GPU optimization and are faster.
+
+3. **Memory Usage:**
+   - Quantized models reduce memory usage by ~31% (e.g., `Llama-3.2-1B` uses 7000 MB compared to 10200 MB for the non-quantized version).
+   - Ideal for memory-constrained environments.
+
+4. **Scalability:**
+   - Larger models improve accuracy but increase memory usage, presenting challenges for deployment in resource-constrained scenarios.
+
+#### Potential Use on CPU
+
+While quantized models offer significant memory savings, their potential use on CPU for inference is highly relevant for environments without access to GPUs. However, the current implementation relies on the `bitsandbytes` library, which is GPU-only and does not support quantization on devices like the Apple M1 chip.
+
+As a result, I could not test the quantized model on my M1-based CPU. Further work is required to adapt and evaluate the performance of quantized models on CPU-based systems. This would enable deployment in a wider range of hardware environments, including laptops and servers without dedicated GPUs. Unfortunately, due to time constraints, this testing was not performed in the current project.
 
 ## Deliverables
 
